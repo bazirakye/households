@@ -221,12 +221,12 @@ var householdLayer = L.geoJson(null);
 var households = L.geoJson(null, {
   pointToLayer: function (feature, latlng) {
     return L.marker(latlng, {
-      // icon: L.icon({
-      //   iconUrl: "assets/img/museum.png",
-      //   iconSize: [24, 28],
-      //   iconAnchor: [12, 28],
-      //   popupAnchor: [0, -25]
-      // }),
+      icon: L.icon({
+        iconUrl: "assets/img/museum.png",
+        iconSize: [24, 28],
+        iconAnchor: [12, 28],
+        popupAnchor: [0, -25]
+      }),
       title: feature.properties.name,
       riseOnHover: true
     });
@@ -235,11 +235,49 @@ var households = L.geoJson(null, {
   
   onEachFeature: function (feature, layer) {
     if (feature.properties) {
+      var button = document.createElement("button");
+      button.textContent = "Click me";
+      button.addEventListener("click", function() {
+      
+        // geting home cordinates
+
+        var lat_home= feature.geometry.coordinates[1];
+        var lng_home= feature.geometry.coordinates[0];
+
+      var home = L.marker([lat_home,lng_home]).addTo(map);
+      var homeLatLng = L.latLng(home.getLatLng());
+      
+      // getting current cordinates
+
+      navigator.geolocation.getCurrentPosition(function(position) {
+      var lat_current = position.coords.latitude,
+          lng_current = position.coords.longitude;
+          L.marker([lat_current,lng_current]).addTo(map);
+
+      var currentLatLng = L.latLng(lat_current, lng_current);
+  
+      var distance = homeLatLng.distanceTo(currentLatLng);
+
+      // console.log(distance);
+
+      if (distance <= 500000) {
+        // home.setIcon(new_icon);
+        alert(["yes",distance]);
+
+      }else{
+        alert(["no",distance]);
+      }
+
+
+      });
+    
+      });
+
       var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><th>Name</th><td>" + feature.properties.name + "</td></tr>" + "<tr><th>Phone</th><td>" + feature.properties.amenity + "</td></tr>" + "<tr><th>Address</th><td>" + feature.properties.healthcare + "</td></tr>" + "<tr><th>Website</th><td><a class='url-break' href='" + feature.properties.addrcity + "' target='_blank'>" + feature.properties.capacitype + "</a></td></tr>" + "<table>";
       layer.on({
         click: function (e) {
           $("#feature-title").html(feature.properties.name);
-          $("#feature-info").html(content);
+          $("#feature-info").html([content,'<br>',button]);
           $("#featureModal").modal("show");
           highlight.clearLayers().addLayer(L.circleMarker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], highlightStyle));
         }
