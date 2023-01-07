@@ -261,7 +261,7 @@ var households = L.geoJson(null, {
       // console.log(distance);
 
       if (distance <= 500000) {
-        // home.setIcon(new_icon);
+
         alert(["yes",distance]);
 
       }else{
