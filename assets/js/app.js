@@ -241,10 +241,10 @@ var households = L.geoJson(null, {
       
         // geting home cordinates
 
-        var lat_home= feature.geometry.coordinates[1];
-        var lng_home= feature.geometry.coordinates[0];
+      var lat_home= feature.geometry.coordinates[1];
+      var lng_home= feature.geometry.coordinates[0];
 
-      var home = L.marker([lat_home,lng_home]).addTo(map);
+      var home = L.marker([lat_home,lng_home]);
       var homeLatLng = L.latLng(home.getLatLng());
       
       // getting current cordinates
@@ -252,22 +252,32 @@ var households = L.geoJson(null, {
       navigator.geolocation.getCurrentPosition(function(position) {
       var lat_current = position.coords.latitude,
           lng_current = position.coords.longitude;
-          L.marker([lat_current,lng_current]).addTo(map);
+          L.marker([lat_current,lng_current])
 
       var currentLatLng = L.latLng(lat_current, lng_current);
   
       var distance = homeLatLng.distanceTo(currentLatLng);
 
-      // console.log(distance);
 
-      if (distance <= 500000) {
+      if (distance <= 50000000) {
+        L.marker(homeLatLng).addTo(map);
+        
+        $.ajax({
+          url: 'markers.php',
+          type: 'POST',
+          data: {latitude: homeLatLng.lat,longitude: homeLatLng.lng},
 
-        alert(["yes",distance]);
+          success: function(response) {
+          alert('Data inserted successfully!');
+          },
+          error: function(xhr, status, error) {
+            console.log('sorry');
+          }
+      });
 
       }else{
         alert(["no",distance]);
       }
-
 
       });
     
@@ -298,6 +308,24 @@ $.getJSON("data/household.geojson", function (data) {
   households.addData(data);
   map.addLayer(householdLayer);
 });
+
+// households which have been visited returned from the database
+$.ajax({
+  type: "POST",
+  url: "getmarkers.php",
+  dataType: "json",
+  success: function(data){
+      // Iterate over the array of points
+      for (var i = 0; i < data.length; i++) {
+        // Get the coordinates of the point
+        var lat = data[i].lat;
+        var lng = data[i].lng;
+       L.marker([lat, lng]).addTo(map);
+    
+      }
+    }
+});
+
 
 map = L.map("map", {
   zoom: 14,
