@@ -241,45 +241,45 @@ var households = L.geoJson(null, {
       
         // geting home cordinates
 
-      var lat_home= feature.geometry.coordinates[1];
-      var lng_home= feature.geometry.coordinates[0];
+        var lat_home= feature.geometry.coordinates[1];
+        var lng_home= feature.geometry.coordinates[0];
 
-      var home = L.marker([lat_home,lng_home]);
-      var homeLatLng = L.latLng(home.getLatLng());
-      
-      // getting current cordinates
-
-      navigator.geolocation.getCurrentPosition(function(position) {
-      var lat_current = position.coords.latitude,
-          lng_current = position.coords.longitude;
-          L.marker([lat_current,lng_current])
-
-      var currentLatLng = L.latLng(lat_current, lng_current);
-  
-      var distance = homeLatLng.distanceTo(currentLatLng);
-
-
-      if (distance <= 50000000) {
-        L.marker(homeLatLng).addTo(map);
+        var home = L.marker([lat_home,lng_home]);
+        var homeLatLng = L.latLng(home.getLatLng());
         
-        $.ajax({
-          url: 'markers.php',
-          type: 'POST',
-          data: {latitude: homeLatLng.lat,longitude: homeLatLng.lng},
+        // getting current cordinates
 
-          success: function(response) {
-          alert('Data inserted successfully!');
-          },
-          error: function(xhr, status, error) {
-            console.log('sorry');
+        navigator.geolocation.getCurrentPosition(function(position) {
+          var lat_current = position.coords.latitude,
+              lng_current = position.coords.longitude;
+              L.marker([lat_current,lng_current])
+
+          var currentLatLng = L.latLng(lat_current, lng_current);
+      
+          var distance = homeLatLng.distanceTo(currentLatLng);
+
+
+          if (distance <= 50000000) {
+            L.marker(homeLatLng).addTo(map);
+            
+            $.ajax({
+              url: 'markers.php',
+              type: 'POST',
+              data: {latitude: homeLatLng.lat,longitude: homeLatLng.lng},
+
+              success: function(response) {
+              alert('Data inserted successfully!');
+              },
+              error: function(xhr, status, error) {
+                console.log('sorry');
+              }
+            });
+
+          }else{
+            alert(["no",distance]);
           }
-      });
 
-      }else{
-        alert(["no",distance]);
-      }
-
-      });
+          });
     
       });
 
@@ -314,17 +314,28 @@ $.ajax({
   type: "POST",
   url: "getmarkers.php",
   dataType: "json",
-  success: function(data){
-      // Iterate over the array of points
-      for (var i = 0; i < data.length; i++) {
-        // Get the coordinates of the point
-        var lat = data[i].lat;
-        var lng = data[i].lng;
-       L.marker([lat, lng]).addTo(map);
-    
-      }
+  success: function(data) {
+    // Create a layer group to hold the markers
+    var markerLayer = L.layerGroup();
+
+    // Iterate over the array of points
+    for (var i = 0; i < data.length; i++) {
+      // Get the coordinates of the point
+      var lat = data[i].lat;
+      var lng = data[i].lng;
+
+      // Create a marker for the point
+      var marker = L.marker([lat, lng]);
+
+      // Add the marker to the layer group
+      markerLayer.addLayer(marker);
     }
+
+    // Add the layer group to the map
+    markerLayer.addTo(map);
+  }
 });
+
 
 
 map = L.map("map", {
