@@ -1,4 +1,4 @@
-var map, featureList, boroughSearch = [], householdSearch=[];
+var map, featureList, boroughSearch = [], householdSearch=[], getMarkersSearch=[];
 
 $(window).resize(function() {
   sizeLayerControl();
@@ -95,6 +95,16 @@ function syncSidebar() {
 /* Loop through households layer and add only features which are in the map bounds */
   households.eachLayer(function (layer) {
   if (map.hasLayer(householdLayer)) {
+    if (map.getBounds().contains(layer.getLatLng())) {
+      $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/museum.png"></td><td class="feature-name">' + layer.feature.properties.name + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
+    }
+  }
+});
+
+ /* Loop through getmarkers layer and add only features which are in the map bounds */
+  
+ getmarkers.eachLayer(function (layer) {
+  if (map.hasLayer(getMarkersLayer)) {
     if (map.getBounds().contains(layer.getLatLng())) {
       $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/museum.png"></td><td class="feature-name">' + layer.feature.properties.name + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
     }
@@ -310,30 +320,71 @@ $.getJSON("data/household.geojson", function (data) {
 });
 
 // households which have been visited returned from the database
-$.ajax({
-  type: "POST",
-  url: "getmarkers.php",
-  dataType: "json",
-  success: function(data) {
-    // Create a layer group to hold the markers
-    var markerLayer = L.layerGroup();
+// $.ajax({
+//   type: "POST",
+//   url: "getmarkers.php",
+//   dataType: "json",
+//   success: function(data) {
+//     // Create a layer group to hold the markers
+//     var markerLayer = L.layerGroup();
 
-    // Iterate over the array of points
-    for (var i = 0; i < data.length; i++) {
-      // Get the coordinates of the point
-      var lat = data[i].lat;
-      var lng = data[i].lng;
+//     // Iterate over the array of points
+//     for (var i = 0; i < data.length; i++) {
+//       // Get the coordinates of the point
+//       var lat = data[i].lat;
+//       var lng = data[i].lng;
 
-      // Create a marker for the point
-      var marker = L.marker([lat, lng]);
+//       // Create a marker for the point
+//       var marker = L.marker([lat, lng]);
 
-      // Add the marker to the layer group
-      markerLayer.addLayer(marker);
+//       // Add the marker to the layer group
+//       markerLayer.addLayer(marker);
+//     }
+
+//     // Add the layer group to the map
+//     markerLayer.addTo(map);
+//   }
+// });
+var getMarkersLayer = L.geoJson(null);
+var getmarkers = L.geoJson(null, {
+  pointToLayer: function (feature, latlng) {
+    return L.marker(latlng, {
+      icon: L.icon({
+        iconUrl: "assets/img/theater.png",
+        iconSize: [24, 28],
+        iconAnchor: [12, 28],
+        popupAnchor: [0, -25]
+      }),
+      title: feature.properties.name,
+      riseOnHover: true
+    });
+  },
+  onEachFeature: function (feature, layer) {
+    if (feature.properties) {
+      var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><th>Name</th><td>" + feature.properties.name + "</td></tr>" + "<tr><th>Phone</th><td>" + feature.properties.id + "</td></tr>" + "<tr><th>Address</th><td>" + feature.properties.name + "</td></tr>" + "<tr><th>Website</th><td><a class='url-break' href='" + feature.properties.name + "' target='_blank'>" + feature.properties.id + "</a></td></tr>" + "<table>";
+      layer.on({
+        click: function (e) {
+          $("#feature-title").html(feature.properties.name);
+          $("#feature-info").html(content);
+          $("#featureModal").modal("show");
+          highlight.clearLayers().addLayer(L.circleMarker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], highlightStyle));
+        }
+      });
+      $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/theater.png"></td><td class="feature-name">' + layer.feature.properties.name + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
+      getMarkersSearch.push({
+        name: layer.feature.properties.name,
+        address: layer.feature.properties.id,
+        source: "GetMarkers",
+        id: L.stamp(layer),
+        lat: layer.feature.geometry.coordinates[1],
+        lng: layer.feature.geometry.coordinates[0]
+      });
     }
-
-    // Add the layer group to the map
-    markerLayer.addTo(map);
   }
+});
+$.getJSON("getmarkers.php", function (data) {
+  getmarkers.addData(data);
+  map.addLayer(getMarkersLayer);
 });
 
 
@@ -354,11 +405,19 @@ map.on("overlayadd", function(e) {
     markerClusters.addLayer(households);
     syncSidebar();
   }
+  if (e.layer === getMarkersLayer) {
+    markerClusters.addLayer(getmarkers);
+    syncSidebar();
+  }
 });
 
 map.on("overlayremove", function(e) {
   if (e.layer === householdLayer) {
     markerClusters.removeLayer(households);
+    syncSidebar();
+  }
+  if (e.layer === getMarkersLayer) {
+    markerClusters.removeLayer(getmarkers);
     syncSidebar();
   }
 });
@@ -444,7 +503,8 @@ var baseLayers = {
 
 var groupedOverlays = {
   "Points of Interest": {
-    "<img src='assets/img/museum.png' width='24' height='28'>&nbsp;Households": householdLayer
+    "<img src='assets/img/museum.png' width='24' height='28'>&nbsp;Households": householdLayer,
+    "<img src='assets/img/theater.png' width='24' height='28'>&nbsp;Pre- & Primary Schools": getMarkersLayer
   },
   "Reference": {
     "Boroughs": boroughs,
@@ -501,6 +561,16 @@ $(document).one("ajaxStop", function () {
     local: householdSearch,
     limit: 10
   });
+
+  var getMarkersBH = new Bloodhound({
+    name: "GetMarkers",
+    datumTokenizer: function (d) {
+      return Bloodhound.tokenizers.whitespace(d.name);
+    },
+    queryTokenizer: Bloodhound.tokenizers.whitespace,
+    local: getMarkersSearch,
+    limit: 10
+  });
   
 
   var geonamesBH = new Bloodhound({
@@ -536,6 +606,7 @@ $(document).one("ajaxStop", function () {
   boroughsBH.initialize();
   geonamesBH.initialize();
   householdsBH.initialize();
+  getMarkersBH.initialize();
 
   /* instantiate the typeahead UI */
   $("#searchbox").typeahead({
@@ -560,6 +631,15 @@ $(document).one("ajaxStop", function () {
     }
   },
   {
+    name: "GetMarkers",
+    displayKey: "name",
+    source: householdsBH.ttAdapter(),
+    templates: {
+      header: "<h4 class='typeahead-header'><img src='assets/img/theater.png' width='24' height='28'>&nbsp;GetMarkers</h4>",
+      suggestion: Handlebars.compile(["{{name}}<br>&nbsp;<small>{{address}}</small>"].join(""))
+    }
+  },
+  {
     name: "GeoNames",
     displayKey: "name",
     source: geonamesBH.ttAdapter(),
@@ -575,6 +655,16 @@ $(document).one("ajaxStop", function () {
     if (datum.source === "Households") {
       if (!map.hasLayer(householdLayer)) {
         map.addLayer(householdLayer);
+      }
+      map.setView([datum.lat, datum.lng], 17);
+      if (map._layers[datum.id]) {
+        map._layers[datum.id].fire("click");
+      }
+    }
+
+    if (datum.source === "GetMarkers") {
+      if (!map.hasLayer(getMarkersLayer)) {
+        map.addLayer(getMarkersLayer);
       }
       map.setView([datum.lat, datum.lng], 17);
       if (map._layers[datum.id]) {

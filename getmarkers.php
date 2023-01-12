@@ -16,14 +16,35 @@
   $sql = "SELECT * FROM markers ";
   $result = mysqli_query($conn, $sql);
 
-  // Convert the result to an array and return it as JSON
-  $data = array();
-  while ($row = mysqli_fetch_array($result)) {
-    $data[] = $row;
+  $features = array();
+  while ($row = $result->fetch_assoc()) {
+      $feature = array(
+          'type' => 'Feature',
+          'geometry' => array(
+              'type' => 'Point',
+              'coordinates' => array((float)$row['lng'], (float)$row['lat'])
+          ),
+          'properties' => array(
+              'id' => $row['id'],
+              'name' => $row['name']
+          )
+      );
+      array_push($features, $feature);
   }
-  header('Content-Type: application/json');
-  echo json_encode($data);
+  
+  $geojson = array(
+      'type' => 'FeatureCollection',
+      'features' => $features
+  );
+  
+  
+  header('Content-type: application/json');
+  echo json_encode($geojson);
 
+
+  
   // Close the connection
   mysqli_close($conn);
+
+  
 ?>
