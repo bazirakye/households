@@ -13,7 +13,8 @@
   }
 
   // Retrieve data from the database
-  $sql = "SELECT * FROM markers ";
+  $sql = "SELECT * FROM markers
+WHERE WEEK(created_at, 1) = WEEK(CURDATE(), 3) AND YEAR(created_at) = YEAR(CURDATE()) ";
   $result = mysqli_query($conn, $sql);
 
   $features = array();

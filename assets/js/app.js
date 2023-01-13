@@ -125,16 +125,16 @@ var cartoLight = L.tileLayer("https://cartodb-basemaps-{s}.global.ssl.fastly.net
   maxZoom: 19,
   attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://cartodb.com/attributions">CartoDB</a>'
 });
-var usgsImagery = L.layerGroup([L.tileLayer("http://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/tile/{z}/{y}/{x}", {
-  maxZoom: 15,
-}), L.tileLayer.wms("http://raster.nationalmap.gov/arcgis/services/Orthoimagery/USGS_EROS_Ortho_SCALE/ImageServer/WMSServer?", {
-  minZoom: 16,
-  maxZoom: 19,
-  layers: "0",
-  format: 'image/jpeg',
-  transparent: true,
-  attribution: "Aerial Imagery courtesy USGS"
-})]);
+// var usgsImagery = L.layerGroup([L.tileLayer("http://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/tile/{z}/{y}/{x}", {
+//   maxZoom: 15,
+// }), L.tileLayer.wms("http://raster.nationalmap.gov/arcgis/services/Orthoimagery/USGS_EROS_Ortho_SCALE/ImageServer/WMSServer?", {
+//   minZoom: 16,
+//   maxZoom: 19,
+//   layers: "0",
+//   format: 'image/jpeg',
+//   transparent: true,
+//   attribution: "Aerial Imagery courtesy USGS"
+// })]);
 
 /* Overlay Layers */
 var highlight = L.geoJson(null);
@@ -165,56 +165,6 @@ var boroughs = L.geoJson(null, {
 });
 $.getJSON("data/boroughs.geojson", function (data) {
   boroughs.addData(data);
-});
-
-//Create a color dictionary based off of subway route_id
-var subwayColors = {"1":"#ff3135", "2":"#ff3135", "3":"ff3135", "4":"#009b2e",
-    "5":"#009b2e", "6":"#009b2e", "7":"#ce06cb", "A":"#fd9a00", "C":"#fd9a00",
-    "E":"#fd9a00", "SI":"#fd9a00","H":"#fd9a00", "Air":"#ffff00", "B":"#ffff00",
-    "D":"#ffff00", "F":"#ffff00", "M":"#ffff00", "G":"#9ace00", "FS":"#6e6e6e",
-    "GS":"#6e6e6e", "J":"#976900", "Z":"#976900", "L":"#969696", "N":"#ffff00",
-    "Q":"#ffff00", "R":"#ffff00" };
-
-var subwayLines = L.geoJson(null, {
-  style: function (feature) {
-      return {
-        color: subwayColors[feature.properties.route_id],
-        weight: 3,
-        opacity: 1
-      };
-  },
-  onEachFeature: function (feature, layer) {
-    if (feature.properties) {
-      var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><th>Division</th><td>" + feature.properties.Division + "</td></tr>" + "<tr><th>Line</th><td>" + feature.properties.Line + "</td></tr>" + "<table>";
-      layer.on({
-        click: function (e) {
-          $("#feature-title").html(feature.properties.Line);
-          $("#feature-info").html(content);
-          $("#featureModal").modal("show");
-
-        }
-      });
-    }
-    layer.on({
-      mouseover: function (e) {
-        var layer = e.target;
-        layer.setStyle({
-          weight: 3,
-          color: "#00FFFF",
-          opacity: 1
-        });
-        if (!L.Browser.ie && !L.Browser.opera) {
-          layer.bringToFront();
-        }
-      },
-      mouseout: function (e) {
-        subwayLines.resetStyle(e.target);
-      }
-    });
-  }
-});
-$.getJSON("data/subways.geojson", function (data) {
-  subwayLines.addData(data);
 });
 
 /* Single marker cluster layer to hold all clusters */
@@ -319,32 +269,7 @@ $.getJSON("data/household.geojson", function (data) {
   map.addLayer(householdLayer);
 });
 
-// households which have been visited returned from the database
-// $.ajax({
-//   type: "POST",
-//   url: "getmarkers.php",
-//   dataType: "json",
-//   success: function(data) {
-//     // Create a layer group to hold the markers
-//     var markerLayer = L.layerGroup();
-
-//     // Iterate over the array of points
-//     for (var i = 0; i < data.length; i++) {
-//       // Get the coordinates of the point
-//       var lat = data[i].lat;
-//       var lng = data[i].lng;
-
-//       // Create a marker for the point
-//       var marker = L.marker([lat, lng]);
-
-//       // Add the marker to the layer group
-//       markerLayer.addLayer(marker);
-//     }
-
-//     // Add the layer group to the map
-//     markerLayer.addTo(map);
-//   }
-// });
+/* Empty layer placeholder to add to layer control for listening when to add/remove getmarkers to markerClusters layer */
 var getMarkersLayer = L.geoJson(null);
 var getmarkers = L.geoJson(null, {
   pointToLayer: function (feature, latlng) {
@@ -498,17 +423,18 @@ if (document.body.clientWidth <= 767) {
 
 var baseLayers = {
   "Street Map": cartoLight,
-  "Aerial Imagery": usgsImagery
+  // "Aerial Imagery": usgsImagery
 };
 
 var groupedOverlays = {
   "Points of Interest": {
     "<img src='assets/img/museum.png' width='24' height='28'>&nbsp;Households": householdLayer,
-    "<img src='assets/img/theater.png' width='24' height='28'>&nbsp;Pre- & Primary Schools": getMarkersLayer
+    "<img src='assets/img/theater.png' width='24' height='28'>&nbsp;Visited groups": getMarkersLayer,
+
   },
   "Reference": {
     "Boroughs": boroughs,
-    "Subway Lines": subwayLines
+    // "Subway Lines": subwayLines
   }
 };
 
