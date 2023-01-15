@@ -106,7 +106,7 @@ function syncSidebar() {
  getmarkers.eachLayer(function (layer) {
   if (map.hasLayer(getMarkersLayer)) {
     if (map.getBounds().contains(layer.getLatLng())) {
-      $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/museum.png"></td><td class="feature-name">' + layer.feature.properties.name + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
+      $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/museum.png"></td><td class="feature-name">' + layer.feature.properties.groupName + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
     }
   }
 });
@@ -121,10 +121,16 @@ function syncSidebar() {
 }
 
 /* Basemap Layers */
-var cartoLight = L.tileLayer("https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png", {
+// var cartoLight = L.tileLayer("https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png", {
+//   maxZoom: 19,
+//   attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://cartodb.com/attributions">CartoDB</a>'
+// });
+
+var cartoLight = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
   maxZoom: 19,
-  attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://cartodb.com/attributions">CartoDB</a>'
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 });
+
 // var usgsImagery = L.layerGroup([L.tileLayer("http://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/tile/{z}/{y}/{x}", {
 //   maxZoom: 15,
 // }), L.tileLayer.wms("http://raster.nationalmap.gov/arcgis/services/Orthoimagery/USGS_EROS_Ortho_SCALE/ImageServer/WMSServer?", {
@@ -196,13 +202,20 @@ var households = L.geoJson(null, {
   onEachFeature: function (feature, layer) {
     if (feature.properties) {
       var button = document.createElement("button");
-      button.textContent = "Click me";
+      button.textContent = "submit";
       button.addEventListener("click", function() {
       
         // geting home cordinates
 
         var lat_home= feature.geometry.coordinates[1];
         var lng_home= feature.geometry.coordinates[0];
+        var group_id= feature.properties.group_id;
+        var group_name= feature.properties.name;
+        var cbt_name= feature.properties.cbt_name;
+        var cbt_phone= feature.properties.cbt_phone;
+        var chairperson_name= feature.properties.chairperson_name;
+        var chairperson_phone= feature.properties.chairperson_phone;
+
 
         var home = L.marker([lat_home,lng_home]);
         var homeLatLng = L.latLng(home.getLatLng());
@@ -219,31 +232,36 @@ var households = L.geoJson(null, {
           var distance = homeLatLng.distanceTo(currentLatLng);
 
 
-          if (distance <= 50000000) {
+          if (distance <= 200000000) {
             L.marker(homeLatLng).addTo(map);
             
             $.ajax({
               url: 'markers.php',
               type: 'POST',
-              data: {latitude: homeLatLng.lat,longitude: homeLatLng.lng},
-
+              data: {latitude: homeLatLng.lat, longitude: homeLatLng.lng, groupId:group_id, groupName:group_name, cbtName:cbt_name, cbtPhone:cbt_phone, chairpersonName:chairperson_name, chairpersonPhone:chairperson_phone },
               success: function(response) {
-              alert('Data inserted successfully!');
+                if (response === "New marker created successfully") {
+                  alert("Data sent successfully!");
+                  $('.modal').modal('hide');
+
+              }else {
+                alert("Error during sending data!");
+              }
               },
               error: function(xhr, status, error) {
-                console.log('sorry');
+              alert('sorry, an error has occured. Try again!');
               }
             });
 
           }else{
-            alert(["no",distance]);
+            alert(["Sorry, You\'re not in the group location",distance]);
           }
 
           });
     
       });
 
-      var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><th>Name</th><td>" + feature.properties.name + "</td></tr>" + "<tr><th>Phone</th><td>" + feature.properties.amenity + "</td></tr>" + "<tr><th>Address</th><td>" + feature.properties.healthcare + "</td></tr>" + "<tr><th>Website</th><td><a class='url-break' href='" + feature.properties.addrcity + "' target='_blank'>" + feature.properties.capacitype + "</a></td></tr>" + "<table>";
+      var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><th>Group Id</th><td>" + feature.properties.group_id + "</td></tr>"+"<tr><th>Group name</th><td>" + feature.properties.name + "</td></tr>" + "<tr><th>CBT name</th><td>" + feature.properties.cbt_name + "</td></tr>" + "<tr><th>CBT phone</th><td>" + feature.properties.cbt_phone + "</td></tr>" + "<tr><th>Chairperson name</th><td>" + feature.properties.chairperson_name + "</td></tr>" + "<tr><th>Chairperson phone</th><td>" + feature.properties.chairperson_phone + "</td></tr>"+ "<table>";
       layer.on({
         click: function (e) {
           $("#feature-title").html(feature.properties.name);
@@ -264,7 +282,7 @@ var households = L.geoJson(null, {
     }
   }
 });
-$.getJSON("data/household.geojson", function (data) {
+$.getJSON("data/vsla_groups.geojson", function (data) {
   households.addData(data);
   map.addLayer(householdLayer);
 });
@@ -286,19 +304,19 @@ var getmarkers = L.geoJson(null, {
   },
   onEachFeature: function (feature, layer) {
     if (feature.properties) {
-      var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><th>Name</th><td>" + feature.properties.name + "</td></tr>" + "<tr><th>Phone</th><td>" + feature.properties.id + "</td></tr>" + "<tr><th>Address</th><td>" + feature.properties.name + "</td></tr>" + "<tr><th>Website</th><td><a class='url-break' href='" + feature.properties.name + "' target='_blank'>" + feature.properties.id + "</a></td></tr>" + "<table>";
+      var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><th>Group Id</th><td>" + feature.properties.groupId + "</td></tr>"+"<tr><th>Group name</th><td>" + feature.properties.groupName + "</td></tr>" + "<tr><th>CBT name</th><td>" + feature.properties.cbtName + "</td></tr>" + "<tr><th>CBT phone</th><td>" + feature.properties.cbtPhone + "</td></tr>" + "<tr><th>Chairperson name</th><td>" + feature.properties.chairpersonName + "</td></tr>" + "<tr><th>Chairperson phone</th><td>" + feature.properties.chairpersonPhone + "</td></tr>"+ "<table>";
       layer.on({
         click: function (e) {
-          $("#feature-title").html(feature.properties.name);
+          $("#feature-title").html(feature.properties.groupName);
           $("#feature-info").html(content);
           $("#featureModal").modal("show");
           highlight.clearLayers().addLayer(L.circleMarker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], highlightStyle));
         }
       });
-      $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/theater.png"></td><td class="feature-name">' + layer.feature.properties.name + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
+      $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/theater.png"></td><td class="feature-name">' + layer.feature.properties.groupName + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
       getMarkersSearch.push({
-        name: layer.feature.properties.name,
-        address: layer.feature.properties.id,
+        name: layer.feature.properties.groupName,
+        // address: layer.feature.properties.id,
         source: "GetMarkers",
         id: L.stamp(layer),
         lat: layer.feature.geometry.coordinates[1],
@@ -373,7 +391,7 @@ var attributionControl = L.control({
 });
 attributionControl.onAdd = function (map) {
   var div = L.DomUtil.create("div", "leaflet-control-attribution");
-  div.innerHTML = "<span class='hidden-xs'>Developed by <a href='http://bryanmcbride.com'>bryanmcbride.com</a> | </span><a href='#' onclick='$(\"#attributionModal\").modal(\"show\"); return false;'>Attribution</a>";
+  div.innerHTML = "<span class='hidden-xs'>Developed by <a href='https://github.com/bazirakye'>bazirakye</a> | </span><a href='#' onclick='$(\"#attributionModal\").modal(\"show\"); return false;'>Attribution</a>";
   return div;
 };
 map.addControl(attributionControl);
@@ -383,36 +401,36 @@ var zoomControl = L.control.zoom({
 }).addTo(map);
 
 /* GPS enabled geolocation control set to follow the user's location */
-var locateControl = L.control.locate({
-  position: "bottomright",
-  drawCircle: true,
-  follow: true,
-  setView: true,
-  keepCurrentZoomLevel: true,
-  markerStyle: {
-    weight: 1,
-    opacity: 0.8,
-    fillOpacity: 0.8
-  },
-  circleStyle: {
-    weight: 1,
-    clickable: false
-  },
-  icon: "fa fa-location-arrow",
-  metric: false,
-  strings: {
-    title: "My location",
-    popup: "You are within {distance} {unit} from this point",
-    outsideMapBoundsMsg: "You seem located outside the boundaries of the map"
-  },
-  locateOptions: {
-    maxZoom: 18,
-    watch: true,
-    enableHighAccuracy: true,
-    maximumAge: 10000,
-    timeout: 10000
-  }
-}).addTo(map);
+// var locateControl = L.control.locate({
+//   position: "bottomright",
+//   drawCircle: true,
+//   follow: true,
+//   setView: true,
+//   keepCurrentZoomLevel: true,
+//   markerStyle: {
+//     weight: 1,
+//     opacity: 0.8,
+//     fillOpacity: 0.8
+//   },
+//   circleStyle: {
+//     weight: 1,
+//     clickable: false
+//   },
+//   icon: "fa fa-location-arrow",
+//   metric: false,
+//   strings: {
+//     title: "My location",
+//     popup: "You are within {distance} {unit} from this point",
+//     outsideMapBoundsMsg: "You seem located outside the boundaries of the map"
+//   },
+//   locateOptions: {
+//     maxZoom: 18,
+//     watch: true,
+//     enableHighAccuracy: true,
+//     maximumAge: 10000,
+//     timeout: 10000
+//   }
+// }).addTo(map);
 
 /* Larger screens get expanded layer control and visible sidebar */
 if (document.body.clientWidth <= 767) {
@@ -428,8 +446,8 @@ var baseLayers = {
 
 var groupedOverlays = {
   "Points of Interest": {
-    "<img src='assets/img/museum.png' width='24' height='28'>&nbsp;Households": householdLayer,
-    "<img src='assets/img/theater.png' width='24' height='28'>&nbsp;Visited groups": getMarkersLayer,
+    "<img src='assets/img/museum.png' width='24' height='28'>&nbsp;VSLA groups": householdLayer,
+    "<img src='assets/img/theater.png' width='24' height='28'>&nbsp;Visited this week": getMarkersLayer,
 
   },
   "Reference": {
