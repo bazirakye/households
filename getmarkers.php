@@ -1,5 +1,15 @@
 <?php
-  include 'dbconn.php';
+$host = "localhost";
+$user = "root";
+$password = "helloworld";
+$dbname = "sample";
+
+$conn = mysqli_connect($host, $user, $password, $dbname);
+
+if (!$conn) {
+  die("Connection failed: " . mysqli_connect_error());
+}
+
 
   // Retrieve data from the database
   /*This query uses a subquery to get the most recent created_at for eac

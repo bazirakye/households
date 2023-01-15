@@ -1,5 +1,14 @@
 <?php
-include 'dbconn.php';
+$host = "localhost";
+$user = "root";
+$password = "helloworld";
+$dbname = "sample";
+
+$conn = mysqli_connect($host, $user, $password, $dbname);
+
+if (!$conn) {
+  die("Connection failed: " . mysqli_connect_error());
+}
 
 
 $latitude = $_POST['latitude'];
