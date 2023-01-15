@@ -232,8 +232,9 @@ var households = L.geoJson(null, {
           var distance = homeLatLng.distanceTo(currentLatLng);
 
 
-          if (distance <= 20) {
+          if (distance <= 200000000) {
             L.marker(homeLatLng).addTo(map);
+            L.marker([lat_current,lng_current]).addTo(map);
             
             $.ajax({
               url: 'markers.php',
@@ -261,7 +262,7 @@ var households = L.geoJson(null, {
           });
     
       });
-
+      
       var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><th>Group Id</th><td>" + feature.properties.group_id + "</td></tr>"+"<tr><th>Group name</th><td>" + feature.properties.name + "</td></tr>" + "<tr><th>CBT name</th><td>" + feature.properties.cbt_name + "</td></tr>" + "<tr><th>CBT phone</th><td>" + feature.properties.cbt_phone + "</td></tr>" + "<tr><th>Chairperson name</th><td>" + feature.properties.chairperson_name + "</td></tr>" + "<tr><th>Chairperson phone</th><td>" + feature.properties.chairperson_phone + "</td></tr>"+ "<table>";
       layer.on({
         click: function (e) {
