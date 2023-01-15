@@ -232,7 +232,7 @@ var households = L.geoJson(null, {
           var distance = homeLatLng.distanceTo(currentLatLng);
 
 
-          if (distance <= 200000000) {
+          if (distance <= 20) {
             L.marker(homeLatLng).addTo(map);
             
             $.ajax({
