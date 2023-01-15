@@ -246,6 +246,7 @@ var households = L.geoJson(null, {
 
               }else {
                 alert("Error during sending data!");
+                console.log(response);
               }
               },
               error: function(xhr, status, error) {
