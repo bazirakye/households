@@ -447,7 +447,7 @@ var baseLayers = {
 var groupedOverlays = {
   "Points of Interest": {
     "<img src='assets/img/museum.png' width='24' height='28'>&nbsp;VSLA groups": householdLayer,
-    "<img src='assets/img/theater.png' width='24' height='28'>&nbsp;Visited this week": getMarkersLayer,
+    "<img src='assets/img/theater.png' width='24' height='28'>&nbsp;Visited": getMarkersLayer,
 
   },
   "Reference": {
