@@ -222,89 +222,44 @@ var households = L.geoJson(null, {
         
         // getting current cordinates
 
-        // navigator.geolocation.getCurrentPosition(function(position) {
-        //   var lat_current = position.coords.latitude,
-        //       lng_current = position.coords.longitude;
-        //       L.marker([lat_current,lng_current])
-
-        //   var currentLatLng = L.latLng(lat_current, lng_current);
-      
-        //   var distance = homeLatLng.distanceTo(currentLatLng);
-
-
-        //   if (distance <= 200000000) {
-        //     L.marker(homeLatLng).addTo(map);
-        //     L.marker([lat_current,lng_current]).addTo(map);
-            
-        //     $.ajax({
-        //       url: 'markers.php',
-        //       type: 'POST',
-        //       data: {latitude: homeLatLng.lat, longitude: homeLatLng.lng, groupId:group_id, groupName:group_name, cbtName:cbt_name, cbtPhone:cbt_phone, chairpersonName:chairperson_name, chairpersonPhone:chairperson_phone },
-        //       success: function(response) {
-        //         if (response === "New marker created successfully") {
-        //           alert("Data sent successfully!");
-        //           $('.modal').modal('hide');
-
-        //       }else {
-        //         alert("Error during sending data!");
-        //         console.log(response);
-        //       }
-        //       },
-        //       error: function(xhr, status, error) {
-        //       alert('sorry, an error has occured. Try again!');
-        //       }
-        //     });
-
-        //   }else{
-        //     alert(["Sorry, You\'re not in the group location",distance]);
-        //   }
-
-        //   });
-        var options = {
-          enableHighAccuracy: true
-        };
-
-        var watchID = navigator.geolocation.watchPosition(function(position) {
+        navigator.geolocation.getCurrentPosition(function(position) {
           var lat_current = position.coords.latitude,
               lng_current = position.coords.longitude;
-              L.marker([lat_current,lng_current]).addTo(map);
+              L.marker([lat_current,lng_current])
 
           var currentLatLng = L.latLng(lat_current, lng_current);
       
           var distance = homeLatLng.distanceTo(currentLatLng);
 
 
-          // if (distance <= 200000000) {
-          //   L.marker(homeLatLng).addTo(map);
-          //   L.marker([lat_current,lng_current]).addTo(map);
+          if (distance <= 200000000) {
+            L.marker(homeLatLng).addTo(map);
+            L.marker([lat_current,lng_current]).addTo(map);
             
-          //   $.ajax({
-          //     url: 'markers.php',
-          //     type: 'POST',
-          //     data: {latitude: homeLatLng.lat, longitude: homeLatLng.lng, groupId:group_id, groupName:group_name, cbtName:cbt_name, cbtPhone:cbt_phone, chairpersonName:chairperson_name, chairpersonPhone:chairperson_phone },
-          //     success: function(response) {
-          //       if (response === "New marker created successfully") {
-          //         alert("Data sent successfully!");
-          //         $('.modal').modal('hide');
+            $.ajax({
+              url: 'markers.php',
+              type: 'POST',
+              data: {latitude: homeLatLng.lat, longitude: homeLatLng.lng, groupId:group_id, groupName:group_name, cbtName:cbt_name, cbtPhone:cbt_phone, chairpersonName:chairperson_name, chairpersonPhone:chairperson_phone },
+              success: function(response) {
+                if (response === "New marker created successfully") {
+                  alert("Data sent successfully!");
+                  $('.modal').modal('hide');
 
-          //     }else {
-          //       alert("Error during sending data!");
-          //       console.log(response);
-          //     }
-          //     },
-          //     error: function(xhr, status, error) {
-          //     alert('sorry, an error has occured. Try again!');
-          //     }
-          //   });
+              }else {
+                alert("Error during sending data!");
+                console.log(response);
+              }
+              },
+              error: function(xhr, status, error) {
+              alert('sorry, an error has occured. Try again!');
+              }
+            });
 
-          // }else{
-          //   alert(["Sorry, You\'re not in the group location",distance]);
-          // }
+          }else{
+            alert(["Sorry, You\'re not in the group location",distance]);
+          }
 
-        }, function(error) {
-        // handle error
-        }, options);
-
+          });
     
       });
       
