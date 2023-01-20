@@ -95,9 +95,9 @@ function syncSidebar() {
 /* Loop through households layer and add only features which are in the map bounds */
   households.eachLayer(function (layer) {
   if (map.hasLayer(householdLayer)) {
-    if (map.getBounds().contains(layer.getLatLng())) {
+    // if (map.getBounds().contains(layer.getLatLng())) {
       $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/museum.png"></td><td class="feature-name">' + layer.feature.properties.name + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
-    }
+    // }
   }
 });
 
@@ -105,9 +105,9 @@ function syncSidebar() {
   
  getmarkers.eachLayer(function (layer) {
   if (map.hasLayer(getMarkersLayer)) {
-    if (map.getBounds().contains(layer.getLatLng())) {
-      $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/museum.png"></td><td class="feature-name">' + layer.feature.properties.groupName + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
-    }
+    // if (map.getBounds().contains(layer.getLatLng())) {
+      $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/theater.png"></td><td class="feature-name">' + layer.feature.properties.groupName + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
+    // }
   }
 });
 
@@ -115,9 +115,10 @@ function syncSidebar() {
   featureList = new List("features", {
     valueNames: ["feature-name"]
   });
-  featureList.sort("feature-name", {
-    order: "asc"
-  });
+ /* Sorting the feature list in ascending order. */
+  // featureList.sort("feature-name", {
+  //   order: "asc"
+  // });
 }
 
 /* Basemap Layers */
@@ -222,44 +223,93 @@ var households = L.geoJson(null, {
         
         // getting current cordinates
 
-        navigator.geolocation.getCurrentPosition(function(position) {
-          var lat_current = position.coords.latitude,
-              lng_current = position.coords.longitude;
-              L.marker([lat_current,lng_current])
+        // navigator.geolocation.getCurrentPosition(function(position) {
+        //   var lat_current = position.coords.latitude,
+        //       lng_current = position.coords.longitude;
+        //       L.marker([lat_current,lng_current])
 
-          var currentLatLng = L.latLng(lat_current, lng_current);
+        //   var currentLatLng = L.latLng(lat_current, lng_current);
       
-          var distance = homeLatLng.distanceTo(currentLatLng);
+        //   var distance = homeLatLng.distanceTo(currentLatLng);
 
 
-          if (distance <= 200000000) {
-            L.marker(homeLatLng).addTo(map);
-            L.marker([lat_current,lng_current]).addTo(map);
+        //   if (distance <= 200000000) {
+        //     L.marker(homeLatLng).addTo(map);
+        //     L.marker([lat_current,lng_current]).addTo(map);
             
-            $.ajax({
-              url: 'markers.php',
-              type: 'POST',
-              data: {latitude: homeLatLng.lat, longitude: homeLatLng.lng, groupId:group_id, groupName:group_name, cbtName:cbt_name, cbtPhone:cbt_phone, chairpersonName:chairperson_name, chairpersonPhone:chairperson_phone },
-              success: function(response) {
-                if (response === "New marker created successfully") {
-                  alert("Data sent successfully!");
-                  $('.modal').modal('hide');
+        //     $.ajax({
+        //       url: 'markers.php',
+        //       type: 'POST',
+        //       data: {latitude: homeLatLng.lat, longitude: homeLatLng.lng, groupId:group_id, groupName:group_name, cbtName:cbt_name, cbtPhone:cbt_phone, chairpersonName:chairperson_name, chairpersonPhone:chairperson_phone },
+        //       success: function(response) {
+        //         if (response === "New marker created successfully") {
+        //           alert("Data sent successfully!");
+        //           $('.modal').modal('hide');
 
-              }else {
-                alert("Error during sending data!");
-                console.log(response);
-              }
-              },
-              error: function(xhr, status, error) {
-              alert('sorry, an error has occured. Try again!');
-              }
-            });
+        //       }else {
+        //         alert("Error during sending data!");
+        //         console.log(response);
+        //       }
+        //       },
+        //       error: function(xhr, status, error) {
+        //       alert('sorry, an error has occured. Try again!');
+        //       }
+        //     });
 
-          }else{
-            alert(["Sorry, You\'re not in the group location",distance]);
-          }
+        //   }else{
+        //     alert(["Sorry, You\'re not in the group location",distance]);
+        //   }
 
-          });
+        // });
+        var options = {
+          enableHighAccuracy: true
+        };
+        
+        var watchID = navigator.geolocation.watchPosition(function(position) {
+                  var lat_current = position.coords.latitude,
+                      lng_current = position.coords.longitude;
+                      L.marker([lat_current,lng_current])
+        
+                  var currentLatLng = L.latLng(lat_current, lng_current);
+              
+                  var distance = homeLatLng.distanceTo(currentLatLng);
+        
+        
+                  if (distance <= 2) {
+                    L.marker(homeLatLng).addTo(map);
+                    L.marker([lat_current,lng_current]).addTo(map);
+                    navigator.geolocation.clearWatch(watchID);
+
+                    $.ajax({
+                      url: 'markers.php',
+                      type: 'POST',
+                      data: {latitude: homeLatLng.lat, longitude: homeLatLng.lng, groupId:group_id, groupName:group_name, cbtName:cbt_name, cbtPhone:cbt_phone, chairpersonName:chairperson_name, chairpersonPhone:chairperson_phone },
+                      success: function(response) {
+                        if (response === "New marker created successfully") {
+                          alert("Data sent successfully!");
+                          $('.modal').modal('hide');
+        
+                      }else {
+                        alert("Error during sending data!");
+                        console.log(response);
+                      }
+                      },
+                      error: function(xhr, status, error) {
+                      alert('sorry, an error has occured. Try again!');
+                      }
+                    });
+        
+                  }else{
+
+                    L.marker([lat_current,lng_current]).addTo(map);
+                    navigator.geolocation.clearWatch(watchID);
+                    alert(["Sorry, You\'re not in the group location",distance]);
+                  }
+        
+                }, function(error) {
+                // handle error
+                }, options);
+        
     
       });
       
@@ -272,6 +322,7 @@ var households = L.geoJson(null, {
           highlight.clearLayers().addLayer(L.circleMarker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], highlightStyle));
         }
       });
+     
       $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/museum.png"></td><td class="feature-name">' + layer.feature.properties.name + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
       householdSearch.push({
         name: layer.feature.properties.name,
@@ -329,7 +380,7 @@ var getmarkers = L.geoJson(null, {
 });
 $.getJSON("getmarkers.php", function (data) {
   getmarkers.addData(data);
-  map.addLayer(getMarkersLayer);
+  // map.addLayer(getMarkersLayer);
 });
 
 
