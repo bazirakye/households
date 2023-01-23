@@ -202,10 +202,104 @@ var households = L.geoJson(null, {
   
   onEachFeature: function (feature, layer) {
     if (feature.properties) {
+        
+      var content = "<table class='table table-responsive table-striped table-bordered table-condensed'>" +
+      "<tr><th>Take activity photo</th><td>"+
+
+      "<div class='row-sm-6'>"+
+                "<button class='btn btn-primary' id='take-photo'>Take photo</button>"+ "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp"+
+                "<button class='btn btn-info' id='capture-photo'>Capture photo</button>"+
+            "</div>"+
+      
+      
+      "</td></tr>"+
+       "<tr><th>Group Id</th><td>" + feature.properties.group_id + "</td></tr>"+"<tr><th>Group name</th><td>" + feature.properties.name + "</td></tr>" + "<tr><th>CBT name</th><td>" + feature.properties.cbt_name + "</td></tr>" + "<tr><th>CBT phone</th><td>" + feature.properties.cbt_phone + "</td></tr>" + "<tr><th>Chairperson name</th><td>" + feature.properties.chairperson_name + "</td></tr>" + "<tr><th>Chairperson phone</th><td>" + feature.properties.chairperson_phone + "</td></tr>"+
+      //  "<tr><th>Activity</th>"+
+      // "<td><select class='form-select form-select-sm'>" + 
+      // "<option selected>Open this select menu</option>" + 
+      // "<option value='VSLA concept'>VSLA concept</option>" + 
+      // "<option value='Financial literacy'>Financial literacy</option>" + 
+      // "<option value='SPM'>SPM</option>" + 
+      // "<option value='Savings and Borrowing'>Savings and Borrowing</option>" + 
+      // "</select></td>"+
+      // "</tr>"+ 
+      
+      "<tr id='preview-row' style='display:none;'><th>preview<th><td></td><video id='video-preview'></video></tr>"+
+      "<tr><th>image</th><td><canvas id='photo-canvas' width='320' height='200'></canvas></td></tr>"+
+      "</table>";
+
+      
+     
+
+
+
+
+
+
+      layer.on({
+        click: function (e) {
+          $("#feature-title").html(feature.properties.name);
+          $("#feature-info").html([content,'<br>',button]);
+          $("#featureModal").modal("show");
+          highlight.clearLayers().addLayer(L.circleMarker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], highlightStyle));
+          
+          if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            document.getElementById("take-photo").addEventListener("click", function() {
+              
+              navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+                var video = document.getElementById("video-preview");
+                video.width = 320;
+                video.height = 200;
+                video.srcObject = stream;
+                video.play();
+                
+              });
+
+  
+            });
+            document.getElementById("capture-photo").addEventListener("click", function() {
+
+              var video = document.getElementById("video-preview");
+              var canvas = document.getElementById("photo-canvas");
+              var ctx = canvas.getContext("2d");
+              canvas.width = 280;
+              canvas.height = 200;
+              // Draw the video frame on the canvas
+              ctx.drawImage(video, 0, 0, canvas.width, canvas.height); 
+
+
+            /* Stopping the video stream. */
+              var video = document.getElementById("video-preview");
+              var stream = video.srcObject;
+              var tracks = stream.getTracks();
+              tracks.forEach(function(track) {
+              track.stop();
+              });
+            });
+          }
+        }
+      });
+     
+      $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/museum.png"></td><td class="feature-name">' + layer.feature.properties.name + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
+      householdSearch.push({
+        name: layer.feature.properties.name,
+        address: layer.feature.properties.addrcity,
+        source: "Households",
+        id: L.stamp(layer),
+        lat: layer.feature.geometry.coordinates[1],
+        lng: layer.feature.geometry.coordinates[0]
+      });
+
+
+
       var button = document.createElement("button");
       button.textContent = "submit";
       button.addEventListener("click", function() {
-      
+        
+        var canvas = document.getElementById("photo-canvas");
+        var ctx = canvas.getContext("2d");
+        var imageData = canvas.toDataURL("image/png");
+
         // geting home cordinates
 
         var lat_home= feature.geometry.coordinates[1];
@@ -216,8 +310,6 @@ var households = L.geoJson(null, {
         var cbt_phone= feature.properties.cbt_phone;
         var chairperson_name= feature.properties.chairperson_name;
         var chairperson_phone= feature.properties.chairperson_phone;
-
-
         var home = L.marker([lat_home,lng_home]);
         var homeLatLng = L.latLng(home.getLatLng());
         
@@ -275,7 +367,7 @@ var households = L.geoJson(null, {
                   var distance = homeLatLng.distanceTo(currentLatLng);
         
         
-                  if (distance <= 2) {
+                  if (distance <= 2000000000) {
                     L.marker(homeLatLng).addTo(map);
                     L.marker([lat_current,lng_current]).addTo(map);
                     navigator.geolocation.clearWatch(watchID);
@@ -283,7 +375,7 @@ var households = L.geoJson(null, {
                     $.ajax({
                       url: 'markers.php',
                       type: 'POST',
-                      data: {latitude: homeLatLng.lat, longitude: homeLatLng.lng, groupId:group_id, groupName:group_name, cbtName:cbt_name, cbtPhone:cbt_phone, chairpersonName:chairperson_name, chairpersonPhone:chairperson_phone },
+                      data: {image: imageData, latitude: homeLatLng.lat, longitude: homeLatLng.lng, groupId:group_id, groupName:group_name, cbtName:cbt_name, cbtPhone:cbt_phone, chairpersonName:chairperson_name, chairpersonPhone:chairperson_phone },
                       success: function(response) {
                         if (response === "New marker created successfully") {
                           alert("Data sent successfully!");
@@ -312,26 +404,7 @@ var households = L.geoJson(null, {
         
     
       });
-      
-      var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><th>Group Id</th><td>" + feature.properties.group_id + "</td></tr>"+"<tr><th>Group name</th><td>" + feature.properties.name + "</td></tr>" + "<tr><th>CBT name</th><td>" + feature.properties.cbt_name + "</td></tr>" + "<tr><th>CBT phone</th><td>" + feature.properties.cbt_phone + "</td></tr>" + "<tr><th>Chairperson name</th><td>" + feature.properties.chairperson_name + "</td></tr>" + "<tr><th>Chairperson phone</th><td>" + feature.properties.chairperson_phone + "</td></tr>"+ "<table>";
-      layer.on({
-        click: function (e) {
-          $("#feature-title").html(feature.properties.name);
-          $("#feature-info").html([content,'<br>',button]);
-          $("#featureModal").modal("show");
-          highlight.clearLayers().addLayer(L.circleMarker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], highlightStyle));
-        }
-      });
-     
-      $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/museum.png"></td><td class="feature-name">' + layer.feature.properties.name + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
-      householdSearch.push({
-        name: layer.feature.properties.name,
-        address: layer.feature.properties.addrcity,
-        source: "Households",
-        id: L.stamp(layer),
-        lat: layer.feature.geometry.coordinates[1],
-        lng: layer.feature.geometry.coordinates[0]
-      });
+   
     }
   }
 });
