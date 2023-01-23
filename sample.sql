@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 15, 2023 at 11:05 AM
+-- Generation Time: Jan 23, 2023 at 01:33 PM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 8.1.6
 
@@ -37,15 +37,9 @@ CREATE TABLE `markers` (
   `cbtPhone` varchar(250) NOT NULL,
   `chairpersonName` varchar(250) NOT NULL,
   `chairpersonPhone` varchar(250) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `photo` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `markers`
---
-
-INSERT INTO `markers` (`id`, `lat`, `lng`, `groupId`, `groupName`, `cbtName`, `cbtPhone`, `chairpersonName`, `chairpersonPhone`, `created_at`) VALUES
-(12, '2.976229', '30.91919', '1', 'ASIANZU', 'BAZIRAKYE TONNY', '783281148', 'OPIO PATRICK', '701849582', '2023-01-15 09:51:17');
 
 --
 -- Indexes for dumped tables
@@ -65,7 +59,7 @@ ALTER TABLE `markers`
 -- AUTO_INCREMENT for table `markers`
 --
 ALTER TABLE `markers`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
