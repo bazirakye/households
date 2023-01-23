@@ -246,7 +246,7 @@ var households = L.geoJson(null, {
           if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             document.getElementById("take-photo").addEventListener("click", function() {
               
-              navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+              navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } }).then(function(stream) {
                 var video = document.getElementById("video-preview");
                 video.width = 320;
                 video.height = 200;
