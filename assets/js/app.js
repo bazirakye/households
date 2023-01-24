@@ -207,8 +207,8 @@ var households = L.geoJson(null, {
       "<tr><th>Take activity photo</th><td>"+
 
       "<div class='row-sm-6'>"+
-                "<button class='btn btn-primary' id='take-photo'>Take photo</button>"+ "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp"+
-                "<button class='btn btn-info' id='capture-photo'>Capture photo</button>"+
+                "<button class='btn btn-xs btn-primary' id='take-photo'>Take photo</button>"+ "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp"+
+                "<button class='btn btn-xs btn-secondary' id='capture-photo'>Capture photo</button>"+
             "</div>"+
       
       
@@ -225,7 +225,7 @@ var households = L.geoJson(null, {
       // "</tr>"+ 
       
       "<tr id='preview-row' style='display:none;'><th>preview<th><td></td><video id='video-preview'></video></tr>"+
-      "<tr><th>image</th><td><canvas id='photo-canvas' width='320' height='200'></canvas></td></tr>"+
+      "<tr><th>image</th><td><canvas id='photo-canvas' width='200' height='200'></canvas></td></tr>"+
       "</table>";
 
       
@@ -248,8 +248,8 @@ var households = L.geoJson(null, {
               
               navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } }).then(function(stream) {
                 var video = document.getElementById("video-preview");
-                video.width = 320;
-                video.height = 200;
+                video.width = 220;
+                video.height = 180;
                 video.srcObject = stream;
                 video.play();
                 
@@ -262,8 +262,8 @@ var households = L.geoJson(null, {
               var video = document.getElementById("video-preview");
               var canvas = document.getElementById("photo-canvas");
               var ctx = canvas.getContext("2d");
-              canvas.width = 280;
-              canvas.height = 200;
+              canvas.width = 220;
+              canvas.height = 180;
               // Draw the video frame on the canvas
               ctx.drawImage(video, 0, 0, canvas.width, canvas.height); 
 
