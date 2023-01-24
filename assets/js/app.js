@@ -367,7 +367,7 @@ var households = L.geoJson(null, {
                   var distance = homeLatLng.distanceTo(currentLatLng);
         
         
-                  if (distance <= 2000000000) {
+                  if (distance <= 300) {
                     L.marker(homeLatLng).addTo(map);
                     L.marker([lat_current,lng_current]).addTo(map);
                     navigator.geolocation.clearWatch(watchID);
