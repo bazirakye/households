@@ -214,15 +214,6 @@ var households = L.geoJson(null, {
       
       "</td></tr>"+
        "<tr><th>Group Id</th><td>" + feature.properties.group_id + "</td></tr>"+"<tr><th>Group name</th><td>" + feature.properties.name + "</td></tr>" + "<tr><th>CBT name</th><td>" + feature.properties.cbt_name + "</td></tr>" + "<tr><th>CBT phone</th><td>" + feature.properties.cbt_phone + "</td></tr>" + "<tr><th>Chairperson name</th><td>" + feature.properties.chairperson_name + "</td></tr>" + "<tr><th>Chairperson phone</th><td>" + feature.properties.chairperson_phone + "</td></tr>"+
-      //  "<tr><th>Activity</th>"+
-      // "<td><select class='form-select form-select-sm'>" + 
-      // "<option selected>Open this select menu</option>" + 
-      // "<option value='VSLA concept'>VSLA concept</option>" + 
-      // "<option value='Financial literacy'>Financial literacy</option>" + 
-      // "<option value='SPM'>SPM</option>" + 
-      // "<option value='Savings and Borrowing'>Savings and Borrowing</option>" + 
-      // "</select></td>"+
-      // "</tr>"+ 
       
       "<tr id='preview-row' style='display:none;'><th>preview<th><td></td><video id='video-preview'></video></tr>"+
       "<tr><th>image</th><td><canvas id='photo-canvas' width='200' height='200'></canvas></td></tr>"+
@@ -381,21 +372,21 @@ var households = L.geoJson(null, {
                           alert("Data sent successfully!");
                           $('.modal').modal('hide');
         
-                      }else {
-                        alert("Error during sending data!");
-                        console.log(response);
-                      }
+                        }else {
+                          alert("Error during sending data!");
+                          console.log(response);
+                        }
                       },
                       error: function(xhr, status, error) {
-                      alert('sorry, an error has occured. Try again!');
+                        alert('sorry, an error has occured. Try again!');
                       }
                     });
         
                   }else{
-
                     L.marker([lat_current,lng_current]).addTo(map);
                     navigator.geolocation.clearWatch(watchID);
                     alert(["Sorry, You\'re not in the group location",distance]);
+                    $('.modal').modal('hide');
                   }
         
                 }, function(error) {
@@ -525,38 +516,6 @@ map.addControl(attributionControl);
 var zoomControl = L.control.zoom({
   position: "bottomright"
 }).addTo(map);
-
-/* GPS enabled geolocation control set to follow the user's location */
-// var locateControl = L.control.locate({
-//   position: "bottomright",
-//   drawCircle: true,
-//   follow: true,
-//   setView: true,
-//   keepCurrentZoomLevel: true,
-//   markerStyle: {
-//     weight: 1,
-//     opacity: 0.8,
-//     fillOpacity: 0.8
-//   },
-//   circleStyle: {
-//     weight: 1,
-//     clickable: false
-//   },
-//   icon: "fa fa-location-arrow",
-//   metric: false,
-//   strings: {
-//     title: "My location",
-//     popup: "You are within {distance} {unit} from this point",
-//     outsideMapBoundsMsg: "You seem located outside the boundaries of the map"
-//   },
-//   locateOptions: {
-//     maxZoom: 18,
-//     watch: true,
-//     enableHighAccuracy: true,
-//     maximumAge: 10000,
-//     timeout: 10000
-//   }
-// }).addTo(map);
 
 /* Larger screens get expanded layer control and visible sidebar */
 if (document.body.clientWidth <= 767) {
