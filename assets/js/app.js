@@ -219,13 +219,6 @@ var households = L.geoJson(null, {
       "<tr><th>image</th><td><canvas id='photo-canvas' width='200' height='200'></canvas></td></tr>"+
       "</table>";
 
-      
-     
-
-
-
-
-
 
       layer.on({
         click: function (e) {
@@ -253,7 +246,7 @@ var households = L.geoJson(null, {
               var video = document.getElementById("video-preview");
               var canvas = document.getElementById("photo-canvas");
               var ctx = canvas.getContext("2d");
-              canvas.width = 220;
+              canvas.width = 130;
               canvas.height = 180;
               // Draw the video frame on the canvas
               ctx.drawImage(video, 0, 0, canvas.width, canvas.height); 
@@ -384,8 +377,8 @@ var households = L.geoJson(null, {
         
                   }else{
                     L.marker([lat_current,lng_current]).addTo(map);
-                    navigator.geolocation.clearWatch(watchID);
                     alert(["Sorry, You\'re not in the group location",distance]);
+                    navigator.geolocation.clearWatch(watchID);
                     $('.modal').modal('hide');
                   }
         
@@ -421,7 +414,7 @@ var getmarkers = L.geoJson(null, {
   },
   onEachFeature: function (feature, layer) {
     if (feature.properties) {
-      var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><th>Group Id</th><td>" + feature.properties.groupId + "</td></tr>"+"<tr><th>Group name</th><td>" + feature.properties.groupName + "</td></tr>" + "<tr><th>CBT name</th><td>" + feature.properties.cbtName + "</td></tr>" + "<tr><th>CBT phone</th><td>" + feature.properties.cbtPhone + "</td></tr>" + "<tr><th>Chairperson name</th><td>" + feature.properties.chairpersonName + "</td></tr>" + "<tr><th>Chairperson phone</th><td>" + feature.properties.chairpersonPhone + "</td></tr>"+ "<table>";
+      var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><th>Group Id</th><td>" + feature.properties.groupId + "</td></tr>"+"<tr><th>Group name</th><td>" + feature.properties.groupName + "</td></tr>" + "<tr><th>CBT name</th><td>" + feature.properties.cbtName + "</td></tr>" + "<tr><th>CBT phone</th><td>" + feature.properties.cbtPhone + "</td></tr>" + "<tr><th>Chairperson name</th><td>" + feature.properties.chairpersonName + "</td></tr>" + "<tr><th>Chairperson phone</th><td>" + feature.properties.chairpersonPhone + "</td></tr>"+  "<tr><th>Meeting Date</th><td>" + feature.properties.createdAt + "</td></tr>"+"<table>";
       layer.on({
         click: function (e) {
           $("#feature-title").html(feature.properties.groupName);

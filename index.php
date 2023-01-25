@@ -267,6 +267,7 @@
       const clearCacheBtn = document.getElementById("clear_cache");
       clearCacheBtn.addEventListener("click", function() {
         localStorage.clear();
+        location.reload();
         alert('cahe cleared');
       });
 

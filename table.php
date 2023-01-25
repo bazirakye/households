@@ -1,3 +1,10 @@
+<?php
+include 'dbconn.php';
+
+$sql="SELECT * FROM markers";
+$result= mysqli_query($conn, $sql);
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -54,46 +61,54 @@
                 <table id="example1" class="table table-bordered table-striped">
                   <thead>
                   <tr>
-                    <th>Rendering engine</th>
-                    <th>Browser</th>
-                    <th>Platform(s)</th>
-                    <th>Engine version</th>
-                    <th>CSS grade</th>
+                    <th>Group id</th>
+                    <th>Group name</th>
+                    <th>CBT name</th>
+                    <th>CBT phone</th>
+                    <th>chairperson name</th>
+                    <th>chairperson Phone</th>
+                    <th>Latitude</th>
+                    <th>Longitude</th>
+                    <th>Activity date</th>
+                    <th>Activity photo</th>
                   </tr>
                   </thead>
                   <tbody>
+                <?php
+                 
+                if (mysqli_num_rows($result) > 0) {
+                  while($row = mysqli_fetch_assoc($result)) {
+                    echo "<tr>
+                            <td>" . $row["groupId"]. "</td>
+                            <td>" . $row["groupName"]. "</td>
+                            <td>" . $row["cbtName"]. "</td>
+                            <td>" . $row["cbtPhone"]. "</td>
+                            <td>" . $row["chairpersonName"]. "</td>
+                            <td>" . $row["chairpersonPhone"]. "</td>
+                            <td>" . $row["lat"]. "</td>
+                            <td>" . $row["lng"]. "</td>
+                            <td>" . $row["created_at"]. "</td>
+                            <td>" . $row["photo"]. "</td>
+                            
+                          </tr>";
+                  }
+                } else {
+                  echo "0 results";
+                }
+                ?>
 
-                  <tr>
-                    <td>Trident</td>
-                    <td>AOL browser (AOL desktop)</td>
-                    <td>Win XP</td>
-                    <td>6</td>
-                    <td>A</td>
-                  </tr>
-                  <tr>
-                    <td>Gecko</td>
-                    <td>Firefox 1.0</td>
-                    <td>Win 98+ / OSX.2+</td>
-                    <td>1.7</td>
-                    <td>A</td>
-                  </tr>
-                  <tr>
-                    <td>Gecko</td>
-                    <td>Firefox 1.5</td>
-                    <td>Win 98+ / OSX.2+</td>
-                    <td>1.8</td>
-                    <td>A</td>
-                  </tr>
-              
                   </tbody>
                   <tfoot>
-                  <tr>
-                    <th>Rendering engine</th>
-                    <th>Browser</th>
-                    <th>Platform(s)</th>
-                    <th>Engine version</th>
-                    <th>CSS grade</th>
-                  </tr>
+                    <th>Group id</th>
+                    <th>Group name</th>
+                    <th>CBT name</th>
+                    <th>CBT phone</th>
+                    <th>chairperson name</th>
+                    <th>chairperson Phone</th>
+                    <th>Latitude</th>
+                    <th>Longitude</th>
+                    <th>Activity date</th>
+                    <th>Activity photo</th>
                   </tfoot>
                 </table>
               </div>

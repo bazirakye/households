@@ -27,23 +27,24 @@ $result = mysqli_query($conn, $sql);
  );
  while($row = mysqli_fetch_assoc($result)) {
     $feature = array(
-       'type' => 'Feature',
-       'geometry' => array(
-          'type' => 'Point',
-          'coordinates' => array(
-             $row['lng'],
-             $row['lat']
-          )
-       ),
-       'properties' => array(
-          'groupId' => $row['groupId'],
-          'groupName' => $row['groupName'],
-          'cbtName' => $row['cbtName'],
-          'cbtPhone' => $row['cbtPhone'],
-          'chairpersonName' => $row['chairpersonName'],
-          'chairpersonPhone' => $row['chairpersonPhone']
-       )
-    );
+      'type' => 'Feature',
+      'geometry' => array(
+         'type' => 'Point',
+         'coordinates' => array(
+            $row['lng'],
+            $row['lat']
+         )
+      ),
+      'properties' => array(
+         'groupId' => $row['groupId'],
+         'groupName' => $row['groupName'],
+         'cbtName' => $row['cbtName'],
+         'cbtPhone' => $row['cbtPhone'],
+         'chairpersonName' => $row['chairpersonName'],
+         'chairpersonPhone' => $row['chairpersonPhone'],
+         'createdAt' => $row['created_at']
+      )
+   );
     array_push($geojson['features'], $feature);
  }
  
