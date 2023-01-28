@@ -204,19 +204,19 @@ var households = L.geoJson(null, {
     if (feature.properties) {
         
       var content = "<table class='table table-responsive table-striped table-bordered table-condensed'>" +
-      "<tr><th>Take activity photo</th><td>"+
-
+      "<tr id='preview-show' style='display:none'><td colspan='2'><video id='video-preview'></video></td></tr>"+
+      "<tr><td colspan='2'>"+
       "<div class='row-sm-6'>"+
-                "<button class='btn btn-xs btn-primary' id='take-photo'>Take photo</button>"+ "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp"+
-                "<button class='btn btn-xs btn-secondary' id='capture-photo'>Capture photo</button>"+
-            "</div>"+
-      
-      
+          "<button class='btn btn-xs btn-primary' id='take-photo'>Take photo</button>"+ "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp"+
+          "<button class='btn btn-xs btn-secondary' id='capture-photo'>Capture</button>"+
+       "</div>"+
+      "<tr><th>Group Id</th><td>" + feature.properties.group_id + "</td></tr>"+"<tr><th>Group name</th><td>" + feature.properties.name + "</td></tr>" + "<tr><th>CBT name</th><td>" + feature.properties.cbt_name + "</td></tr>" + "<tr><th>CBT phone</th><td>" + feature.properties.cbt_phone + "</td></tr>" + "<tr><th>Chairperson name</th><td>" + feature.properties.chairperson_name + "</td></tr>" + "<tr><th>Chairperson phone</th><td>" + feature.properties.chairperson_phone + "</td></tr>"+
+      "<tr><td>Activity</td><td></td></tr>"+
+       "<tr><td colspan='2'><canvas id='photo-canvas' width='200' height='200'></canvas></td></tr>"+
       "</td></tr>"+
-       "<tr><th>Group Id</th><td>" + feature.properties.group_id + "</td></tr>"+"<tr><th>Group name</th><td>" + feature.properties.name + "</td></tr>" + "<tr><th>CBT name</th><td>" + feature.properties.cbt_name + "</td></tr>" + "<tr><th>CBT phone</th><td>" + feature.properties.cbt_phone + "</td></tr>" + "<tr><th>Chairperson name</th><td>" + feature.properties.chairperson_name + "</td></tr>" + "<tr><th>Chairperson phone</th><td>" + feature.properties.chairperson_phone + "</td></tr>"+
       
-      "<tr id='preview-row' style='display:none;'><th>preview<th><td></td><video id='video-preview'></video></tr>"+
-      "<tr><th>image</th><td><canvas id='photo-canvas' width='200' height='200'></canvas></td></tr>"+
+      
+      
       "</table>";
 
 
@@ -228,10 +228,13 @@ var households = L.geoJson(null, {
           highlight.clearLayers().addLayer(L.circleMarker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], highlightStyle));
           
           if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+
             document.getElementById("take-photo").addEventListener("click", function() {
-              
+              var row = document.getElementById("preview-show");
+              row.style.display = "";
               navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } }).then(function(stream) {
                 var video = document.getElementById("video-preview");
+
                 video.width = 220;
                 video.height = 180;
                 video.srcObject = stream;
@@ -246,14 +249,16 @@ var households = L.geoJson(null, {
               var video = document.getElementById("video-preview");
               var canvas = document.getElementById("photo-canvas");
               var ctx = canvas.getContext("2d");
-              canvas.width = 130;
-              canvas.height = 180;
+              canvas.width = video.width;
+              canvas.height = video.height;
               // Draw the video frame on the canvas
               ctx.drawImage(video, 0, 0, canvas.width, canvas.height); 
 
 
             /* Stopping the video stream. */
               var video = document.getElementById("video-preview");
+              var row = document.getElementById("preview-show");
+              row.style.display = "none";
               var stream = video.srcObject;
               var tracks = stream.getTracks();
               tracks.forEach(function(track) {
@@ -351,7 +356,7 @@ var households = L.geoJson(null, {
           var distance = homeLatLng.distanceTo(currentLatLng);
     
     
-          if (distance <= 300000000) {
+          if (distance <= 300) {
             L.marker(homeLatLng).addTo(map);
             L.marker([lat_current,lng_current]).addTo(map);
             navigator.geolocation.clearWatch(watchID);
