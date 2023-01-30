@@ -202,36 +202,219 @@ var households = L.geoJson(null, {
   
   onEachFeature: function (feature, layer) {
     if (feature.properties) {
-        
+      
       var content = "<table class='table table-responsive table-striped table-bordered table-condensed'>" +
       "<tr id='preview-show' style='display:none'><td colspan='2'><video id='video-preview'></video></td></tr>"+
       "<tr><td colspan='2'>"+
       "<div class='row-sm-6'>"+
           "<button class='btn btn-xs btn-primary' id='take-photo'>Take photo</button>"+ "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp"+
           "<button class='btn btn-xs btn-secondary' id='capture-photo'>Capture</button>"+
-       "</div>"+
+      "</div>"+
       "<tr><th>Group Id</th><td>" + feature.properties.group_id + "</td></tr>"+"<tr><th>Group name</th><td>" + feature.properties.name + "</td></tr>" + "<tr><th>CBT name</th><td>" + feature.properties.cbt_name + "</td></tr>" + "<tr><th>CBT phone</th><td>" + feature.properties.cbt_phone + "</td></tr>" + "<tr><th>Chairperson name</th><td>" + feature.properties.chairperson_name + "</td></tr>" + "<tr><th>Chairperson phone</th><td>" + feature.properties.chairperson_phone + "</td></tr>"+
-      "<tr><td>Activity</td><td></td></tr>"+
-       "<tr><td colspan='2'><canvas id='photo-canvas' width='200' height='200'></canvas></td></tr>"+
+      "<tr><th>Activity</th><td>"+
+        "<input type='radio' name='vsla' value='VSLA methodology' id='vsla_methodology'/><label for='vsla_methodology'>VSLA methodology</label><br>"+
+        "<input type='radio' name='vsla' value='Savings and Borrowing' id='savings_and_borrowing'/><label for='savings_and_borrowing'>Savings and Borrowing</label><br>"+
+        "<input type='radio' name='vsla' value='VSLA TOT' id='tot'/><label for='tot'>VSLA TOT</label><br>"+
+        "<input type='radio' name='vsla' value='Financial Literacy' id='fl'/><label for='fl'>Financial Literacy</label><br>"+
+        "<input type='radio' name='vsla' value='Bank Linkages' id='bl'/><label for='bl'>Bank Linkages</label><br>"+
+        "<input type='radio' name='vsla' value='SPM Training' id='spm'/><label for='spm'>SPM training</label><br>"+
       "</td></tr>"+
-      
-      
-      
-      "</table>";
 
+      "<tr id='checkbox_content' style='display:none'>"+
+      "<th>Modules</th>"+
+      "<td>"+
+        "<div>"+
+          "<input type='checkbox' name='vsla_methodology_data' id='introduction' value='Group formation and Assembly' />"+
+          "<label for='introduction'>Group formation</label>"+
+        "</div>"+
+        "<div>"+
+        "<input type='checkbox' name='vsla_methodology_data' value='VSLA concept' id='concept' />"+
+        "<label for='concept'>VSLA concept</label>"+
+      "</div>"+
+        "<div>"+
+          "<input type='checkbox' name='vsla_methodology_data' value='Leadership and Election of the Management committee' id='leaders' />"+
+          "<label for='leaders'>Leadership & Elections</label>"+
+        "</div>"+
+        "<div>"+
+          "<input type='checkbox' name='vsla_methodology_data' value='Development of internal rules and regulations' id='rules' />"+
+          "<label for='rules'>Developing rules</label>"+
+        "</div>"+
+        "<div>"+
+        "<input type='checkbox' name='vsla_methodology_data' value='Introduction to written record keeping' id='record' />"+
+          "<label for='record'>Intro to record keeping</label>"+
+        "</div>"+
+        "<div>"+
+        "<input type='checkbox' name='vsla_methodology_data' value='Meeting procedures/ meeting steps' id='procedure' />"+
+          "<label for='procedure'>Meeting procedures</label>"+
+        "</div>"+
+        "<div>"+
+        "<input type='checkbox' name='vsla_methodology_data' value='Conflicts resolution' id='conflict' />"+
+          "<label for='conflict'>Conflict resolution</label>"+
+        "</div>"+
+        "<div>"+
+        "<input type='checkbox' name='vsla_methodology_data' value='Share-out & Action audit' id='audit' />"+
+          "<label for='audit'>Share-out & Audit</label>"+
+        "</div>"+
+
+        "<div>"+
+          "<input type='checkbox' name='savings_and_borrowing_data' value='Savings' id='savings' />"+
+          "<label for='savings'>Savings</label>"+
+        "</div>"+
+        "<div>"+
+          "<input type='checkbox' name='savings_and_borrowing_data' value='Borrowings' id='borrowing' />"+
+          "<label for='borrowing'>Borrowing</label>"+
+        "</div>"+
+        "<div>"+
+          "<input type='checkbox' name='savings_and_borrowing_data' value='Access to Social fund' id='social' />"+
+          "<label for='social'>Access to social fund</label>"+
+        "</div>"+
+
+
+        "<div>"+
+          "<input type='checkbox' value='TOT on VSLA methodology'  name='tot_data' id='tot1' />"+
+          "<label for='tot1'>TOT on VSLA methodology</label>"+
+        "</div>"+
+        "<div>"+
+          "<input type='checkbox' name='tot_data' value='Financial Literacy and Bank Linkages' id='tot2' />"+
+          "<label for='tot2'>Financial Literacy </label>"+
+        "</div>"+
+        "<div>"+
+          "<input type='checkbox' name='tot_data' value='Selection Planning and Management of IGA' id='tot3' />"+
+          "<label for='tot3'>Managing IGAs</label>"+
+        "</div>"+
+
+        "<div>"+
+          "<input type='checkbox' value='Personal financial Management'  name='fl_data' id='fl1' />"+
+          "<label for='fl1'>Finacial management</label>"+
+        "</div>"+
+        "<div>"+
+          "<input type='checkbox' value='Saving' name='fl_data' id='fl2' />"+
+          "<label for='fl2'>Saving</label>"+
+        "</div>"+
+        "<div>"+ 
+          "<input type='checkbox' value='Loan Management'  name='fl_data' id='fl3' />"+
+          "<label for='fl3'>Loan management</label>"+
+        "</div>"+
+        "<div>"+
+          "<input type='checkbox' value='Investment' name='fl_data' id='fl4' />"+
+          "<label for='fl4'>Investment</label>"+
+        "</div>"+
+        "<div>"+
+          "<input type='checkbox' value='Insurance' name='fl_data' id='fl5' />"+
+          "<label for='fl5'>Insurance</label>"+
+        "</div>"+
+        "<div>"+
+          "<input type='checkbox' value='Planning for Old age' name='fl_data' id='fl6' />"+
+          "<label for='fl6'>Planning for Old age</label>"+
+        "</div>"+
+        "<div>"+
+          "<input type='checkbox' value='Financial Service providers' name='fl_data' id='fl7' />"+
+          "<label for='fl7'>Service providers</label>"+
+        "</div>"+
+
+
+        "<div>"+
+          "<input type='checkbox' value='Rating of Mature groups for Bank linkage' name='bl_data' id='bl1' />"+
+          "<label for='bl1'>Rating of Mature groups</label>"+
+        "</div>"+
+        "<div>"+
+          "<input type='checkbox' value='Sensitization on linkage banking' name='bl_data' id='bl2' />"+
+          "<label for='bl2'>Senstization on banking</label>"+
+        "</div>"+
+        "<div>"+
+          "<input type='checkbox' value='Account opening process' name='bl_data' id='bl3' />"+
+          "<label for='bl3'>Account opening</label>"+
+        "</div>"+
+        "<div>"+
+          "<input type='checkbox' value='Monitoring the performance of the linked group' name='bl_data' id='bl4' />"+
+          "<label for='bl4'>Monitoring linked groups</label>"+
+        "</div>"+
+
+
+
+        "<div>"+
+        "<input type='checkbox' value=' IGA slection process' name='spm_data' id='spm1' />"+
+          "<label for='spm1'>IGA selection</label>"+
+        "</div>"+
+        "<div>"+
+        "<input type='checkbox' value='Market Assessment' name='spm_data' id='spm2' />"+
+          "<label for='spm2'>Market assessment</label>"+
+        "</div>"+
+        "<div>"+
+        "<input type='checkbox' value='Knowledge and skills' name='spm_data' id='spm3' />"+
+          "<label for='spm3'>Knowledge and skills</label>"+
+        "</div>"+
+        "<div>"+
+        "<input type='checkbox' value='Estimation of start-up and working costs' name='spm_data' id='spm4' />"+
+          "<label for='spm4'>Estimation of start-up</label>"+
+        "</div>"+
+        "<div>"+
+        "<input type='checkbox' value='Estimating sales and inccome' name='spm_data' id='spm5' />"+
+          "<label for='spm5'>Estimate sales & income</label>"+
+        "</div>"+
+        "<div>"+
+        "<input type='checkbox' value='Weekly expense and weekly income' name='spm_data' id='spm6' />"+
+          "<label for='spm6'>Weekly expenses & income</label>"+
+        "</div>"+
+        "<div>"+
+        "<input type='checkbox' value='Actual IGA Selection' name='spm_data' id='spm7' />"+
+          "<label for='spm7'>Actual IGA selection</label>"+
+        "</div>"+
+        "<div>"+
+        "<input type='checkbox' value='IGA planning' name='spm_data' id='spm8' />"+
+          "<label for='spm8'>IGA planning</label>"+
+        "</div>"+
+        "<div>"+
+        "<input type='checkbox' value='IGA management' name='spm_data' id='spm9' />"+
+          "<label for='spm9'>IGA management</label>"+
+        "</div>"+
+        
+
+
+      "</td>"+
+      "</tr>"+
+
+      "<tr><th>Activity photo</th><td><canvas id='photo-canvas' width='200' height='200'></canvas></td></tr>"+
+      "</td></tr>"+
+      "</table>";
 
       layer.on({
         click: function (e) {
           $("#feature-title").html(feature.properties.name);
           $("#feature-info").html([content,'<br>',button]);
           $("#featureModal").modal("show");
-          highlight.clearLayers().addLayer(L.circleMarker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], highlightStyle));
           
+          highlight.clearLayers().addLayer(L.circleMarker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], highlightStyle));
+      
+          /* This code below is adding an event listener to each radio input. When the radio input is
+          clicked, the code will check if the checkbox content is hidden. If it is, it will display
+          it. Then, the code will loop through each checkbox and hide it. If the checkbox name
+          matches the radio input id, it will display it. */
+          const radioInputs = document.querySelectorAll('input[type="radio"]');
+          for (let i = 0; i < radioInputs.length; i++) {
+            radioInputs[i].addEventListener("click", function() {
+              const checkboxContent = document.getElementById("checkbox_content");
+              if (checkboxContent.style.display === "none") {
+                checkboxContent.style.display = "";
+              }
+              const checkboxes = checkboxContent.querySelectorAll('input[type="checkbox"]');
+              for (let j = 0; j < checkboxes.length; j++) {
+                const divEl = checkboxes[j].parentElement;
+                divEl.style.display = "none";
+                if (checkboxes[j].name === this.id + "_data") {
+                  divEl.style.display = "";
+                }
+              }
+            });
+          }                
+
+
           if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
 
             document.getElementById("take-photo").addEventListener("click", function() {
               var row = document.getElementById("preview-show");
               row.style.display = "";
+              
               navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } }).then(function(stream) {
                 var video = document.getElementById("video-preview");
 
@@ -290,7 +473,9 @@ var households = L.geoJson(null, {
         var imageData = canvas.toDataURL("image/png");
 
         // geting home cordinates
-
+        var training= document.querySelector('input[name="vsla"]:checked').value;
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+        const modules = Array.from(checkboxes).map(cb => cb.value);
         var lat_home= feature.geometry.coordinates[1];
         var lng_home= feature.geometry.coordinates[0];
         var group_id= feature.properties.group_id;
@@ -301,6 +486,7 @@ var households = L.geoJson(null, {
         var chairperson_phone= feature.properties.chairperson_phone;
         var home = L.marker([lat_home,lng_home]);
         var homeLatLng = L.latLng(home.getLatLng());
+
         
         // getting current cordinates
 
@@ -356,7 +542,7 @@ var households = L.geoJson(null, {
           var distance = homeLatLng.distanceTo(currentLatLng);
     
     
-          if (distance <= 300) {
+          if (distance <= 200) {
             L.marker(homeLatLng).addTo(map);
             L.marker([lat_current,lng_current]).addTo(map);
             navigator.geolocation.clearWatch(watchID);
@@ -365,15 +551,15 @@ var households = L.geoJson(null, {
             $.ajax({
               url: 'markers.php',
               type: 'POST',
-              data: {image: imageData, latitude: homeLatLng.lat, longitude: homeLatLng.lng, groupId:group_id, groupName:group_name, cbtName:cbt_name, cbtPhone:cbt_phone, chairpersonName:chairperson_name, chairpersonPhone:chairperson_phone },
+              data: {image: imageData, latitude: homeLatLng.lat, longitude: homeLatLng.lng, groupId:group_id, groupName:group_name, cbtName:cbt_name, cbtPhone:cbt_phone, chairpersonName:chairperson_name, chairpersonPhone:chairperson_phone ,training:training, modules:modules },
               success: function(response) {
                 if (response === "New marker created successfully") {
                   $('.modal').modal('hide');
                   $('#loading').hide();
                   alert("Data sent successfully!");
+            
 
-
-                }else {
+                }else if (response !== "New marker created successfully") {
                   alert("Error during sending data!");
                   console.log(response);
                 }

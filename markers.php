@@ -21,7 +21,12 @@ $cbtPhone = $_POST['cbtPhone'];
 $chairpersonName = $_POST['chairpersonName'];
 $chairpersonPhone = $_POST['chairpersonPhone'];
 
-$sql = "INSERT INTO markers (lat, lng , groupId , groupName, cbtName, cbtPhone, chairpersonName, chairpersonPhone, photo ) VALUES ('$latitude', '$longitude', '$groupId', '$groupName', '$cbtName', '$cbtPhone' ,'$chairpersonName', '$chairpersonPhone', '$imageName')";
+$training  = $_POST['training'];
+$modules  = $_POST['modules'];
+
+$modules_string = implode(',', $modules);
+
+$sql = "INSERT INTO markers (lat, lng , groupId , groupName, cbtName, cbtPhone, chairpersonName, chairpersonPhone, photo, training, modules) VALUES ('$latitude', '$longitude', '$groupId', '$groupName', '$cbtName', '$cbtPhone' ,'$chairpersonName', '$chairpersonPhone', '$imageName', '$training', '$modules_string')";
 if (mysqli_query($conn,$sql)) {
   echo "New marker created successfully";
 } else {
