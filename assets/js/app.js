@@ -96,7 +96,7 @@ function syncSidebar() {
   households.eachLayer(function (layer) {
   if (map.hasLayer(householdLayer)) {
     // if (map.getBounds().contains(layer.getLatLng())) {
-      $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/museum.png"></td><td class="feature-name">' + layer.feature.properties.name + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
+      $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/museum.png"></td><td class="feature-name">' + layer.feature.properties.group_id + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
     // }
   }
 });
@@ -106,7 +106,7 @@ function syncSidebar() {
  getmarkers.eachLayer(function (layer) {
   if (map.hasLayer(getMarkersLayer)) {
     // if (map.getBounds().contains(layer.getLatLng())) {
-      $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/theater.png"></td><td class="feature-name">' + layer.feature.properties.groupName + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
+      $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/theater.png"></td><td class="feature-name">' + layer.feature.properties.groupId + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
     // }
   }
 });
@@ -542,7 +542,7 @@ var households = L.geoJson(null, {
           var distance = homeLatLng.distanceTo(currentLatLng);
     
     
-          if (distance <= 200) {
+          if (distance <= 2000000) {
             L.marker(homeLatLng).addTo(map);
             L.marker([lat_current,lng_current]).addTo(map);
             navigator.geolocation.clearWatch(watchID);
