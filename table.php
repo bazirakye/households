@@ -23,6 +23,7 @@ $result= mysqli_query($conn, $sql);
   <link rel="apple-touch-icon" sizes="152x152" href="assets/img/favicon-152.png">
   <link rel="icon" sizes="196x196" href="assets/img/favicon-196.png">
   <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.14.0/css/all.css" integrity="sha384-HzLeBuhoNPvSl5KYnjx0BT+WB0QEEqLprO+NBkkk5gbc67FTaL7XIGa2w1L0Xbgc" crossorigin="anonymous">
 
 
 
@@ -70,6 +71,8 @@ $result= mysqli_query($conn, $sql);
                     <th>Latitude</th>
                     <th>Longitude</th>
                     <th>Activity date</th>
+                    <th>Activity</th>
+                    <th>Modules</th>
                     <th>Activity photo</th>
                   </tr>
                   </thead>
@@ -88,9 +91,30 @@ $result= mysqli_query($conn, $sql);
                             <td>" . $row["lat"]. "</td>
                             <td>" . $row["lng"]. "</td>
                             <td>" . $row["created_at"]. "</td>
-                            <td>" . $row["photo"]. "</td>
+                            <td>" . $row["training"]. "</td>
+                            <td>" . $row["modules"]. "</td>
+                            <td><a href='#' data-toggle='modal' data-target='#imageModal' onclick='showImage(\"images/" . $row["photo"] . "\")'><i class='fas fa-image fa-2x'></i></a></td>
                             
-                          </tr>";
+                          </tr>";  ?>
+
+                          <!-- The Modal -->
+                          <div class="modal fade" id="imageModal">
+                            <div class="modal-dialog">
+                              <div class="modal-content">
+                                <!-- Modal Header -->
+                                <div class="modal-header">
+                                  <h4 class="modal-title">Image</h4>
+                                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                </div>
+                                <!-- Modal body -->
+                                <div class="modal-body text-center">
+                                  <img id="image" width="600px" height="600px" src="" alt="Image" class="img-fluid">
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                <?php
                   }
                 } else {
                   echo "0 results";
@@ -108,6 +132,8 @@ $result= mysqli_query($conn, $sql);
                     <th>Latitude</th>
                     <th>Longitude</th>
                     <th>Activity date</th>
+                    <th>Activity</th>
+                    <th>modules</th>
                     <th>Activity photo</th>
                   </tfoot>
                 </table>
@@ -162,6 +188,20 @@ $result= mysqli_query($conn, $sql);
       "responsive": true,
     });
   });
+
+  function showImage(src) {
+  var modal = document.getElementById("imageModal");
+  var image = document.getElementById("image");
+  image.src = src;
+  modal.style.display = "block";
+
+  var span = document.getElementsByClassName("close")[0];
+  span.onclick = function() {
+    modal.style.display = "none";
+  }
+}
+
 </script>
+
 </body>
 </html>
