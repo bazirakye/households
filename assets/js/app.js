@@ -48,6 +48,7 @@ $("#logout-btn").click(function() {
     success: function(data) {
       var response = JSON.parse(data);
       if (response.success) {
+        location.reload();
         alert('You have been successfully logged out.');
       }
     }
@@ -69,6 +70,8 @@ $(document).ready(function() {
           $("#loginModal").modal("hide");
           $(".navbar-collapse.in").collapse("hide");
           alert('Successfully logged in')
+          location.reload();
+
         } else {
            alert('Incorrect email or password.');
         }

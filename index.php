@@ -1,3 +1,6 @@
+<?php
+  session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -60,10 +63,22 @@
                 <li><a href="data/boroughs.geojson" download="boroughs.geojson" target="_blank" data-toggle="collapse" data-target=".navbar-collapse.in"><i class="fa fa-download"></i>&nbsp;&nbsp;Boroughs</a></li>
               </ul>
             </li>
-            <li><a href="table.php"><i class="fa fa-bar-chart white"></i>&nbsp;&nbsp;data</a></li>
-              <li><a href="#" id="logout-btn"><i class="fa fa-sign-out"></i>&nbsp;&nbsp;logout</a></li>
-              <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="login-btn"><i class="fa fa-user"></i>&nbsp;&nbsp;Login</a></li>
 
+            <!-- <li><a href="table.php"><i class="fa fa-bar-chart white"></i>&nbsp;&nbsp;data</a></li>
+            <li><a href="#" id="logout-btn"><i class="fa fa-sign-out"></i>&nbsp;&nbsp;logout</a></li> -->
+
+            <?php
+              if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
+            ?>
+              <li id="data-link"><a href="table.php"><i class="fa fa-bar-chart white"></i>&nbsp;&nbsp;data</a></li>
+              <li id="logout-link"><a href="#" id="logout-btn"><i class="fa fa-sign-out"></i>&nbsp;&nbsp;logout</a></li>
+            <?php
+              } else {
+            ?>
+              <li id="login-link-link"><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="login-btn"><i class="fa fa-user"></i>&nbsp;&nbsp;Login</a></li>
+            <?php
+              }
+            ?>
           </ul>
 
         </div><!--/.navbar-collapse -->
