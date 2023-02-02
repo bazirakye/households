@@ -49,21 +49,23 @@
             <li class="dropdown">
               <a id="toolsDrop" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-globe white"></i>&nbsp;&nbsp;Tools <b class="caret"></b></a>
               <ul class="dropdown-menu">
-                <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="full-extent-btn"><i class="fa fa-arrows-alt"></i>&nbsp;&nbsp;Zoom To Full Extent</a></li>
-                <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="clear_cache"><i class="fa fa-picture-o"></i>&nbsp;&nbsp;Clear cache</a></li>
+                <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="clear_cache"><i class="fa fa- picture-o"></i>&nbsp;&nbsp;Clear cache</a></li>
                 <li class="divider hidden-xs"></li>
-                <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="login-btn"><i class="fa fa-user"></i>&nbsp;&nbsp;Login</a></li>
               </ul>
             </li>
+            <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="full-extent-btn"><i class="fa fa-arrows-alt"></i>&nbsp;&nbsp;Full Extent</a></li>
             <li class="dropdown">
-                <a class="dropdown-toggle" id="downloadDrop" href="#" role="button" data-toggle="dropdown"><i class="fa fa-cloud-download white"></i>&nbsp;&nbsp;Download <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                  <li><a href="data/boroughs.geojson" download="boroughs.geojson" target="_blank" data-toggle="collapse" data-target=".navbar-collapse.in"><i class="fa fa-download"></i>&nbsp;&nbsp;Boroughs</a></li>
-                </ul>
+              <a class="dropdown-toggle" id="downloadDrop" href="#" role="button" data-toggle="dropdown"><i class="fa fa-cloud-download white"></i>&nbsp;&nbsp;Download <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="data/boroughs.geojson" download="boroughs.geojson" target="_blank" data-toggle="collapse" data-target=".navbar-collapse.in"><i class="fa fa-download"></i>&nbsp;&nbsp;Boroughs</a></li>
+              </ul>
             </li>
-            <li class="hidden-xs"><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="list-btn"><i class="fa fa-list white"></i>&nbsp;&nbsp;POI List</a></li>
-            <li class="hidden-xs"><a href="table.php"><i class="fa fa-bar-chart white"></i>&nbsp;&nbsp;data</a></li>
+            <li><a href="table.php"><i class="fa fa-bar-chart white"></i>&nbsp;&nbsp;data</a></li>
+              <li><a href="#" id="logout-btn"><i class="fa fa-sign-out"></i>&nbsp;&nbsp;logout</a></li>
+              <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="login-btn"><i class="fa fa-user"></i>&nbsp;&nbsp;Login</a></li>
+
           </ul>
+
         </div><!--/.navbar-collapse -->
       </div>
     </div>
@@ -167,11 +169,11 @@
                         </div>
                         <div class="form-group">
                           <label for="last-name">Last Name:</label>
-                          <input type="text" class="form-control" id="last-email">
+                          <input type="text" class="form-control" id="last-name">
                         </div>
                         <div class="form-group">
                           <label for="email">Email:</label>
-                          <input type="text" class="form-control" id="email">
+                          <input type="text" class="form-control" id="contact-email">
                         </div>
                       </div>
                       <div class="col-md-8">
@@ -209,23 +211,24 @@
             <h4 class="modal-title">Login</h4>
           </div>
           <div class="modal-body">
-            <form id="contact-form">
+            <form id="login-form">
               <fieldset>
                 <div class="form-group">
-                  <label for="name">Username:</label>
-                  <input type="text" class="form-control" id="username">
+                  <label for="email">Email:</label>
+                  <input type="email" class="form-control" id="email" required>
                 </div>
                 <div class="form-group">
-                  <label for="email">Password:</label>
-                  <input type="password" class="form-control" id="password">
+                  <label for="password">Password:</label>
+                  <input type="password" class="form-control" id="password" required>
                 </div>
               </fieldset>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="submit"  class="btn btn-primary">Login</button>
+              </div>
             </form>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-primary" data-dismiss="modal">Login</button>
-          </div>
+          
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->

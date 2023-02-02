@@ -1,6 +1,13 @@
 <?php
 include 'dbconn.php';
 
+session_start();
+
+if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+  header('Location: index.php');
+  exit;
+}
+
 $sql="SELECT * FROM markers";
 $result= mysqli_query($conn, $sql);
 

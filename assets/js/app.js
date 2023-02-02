@@ -41,6 +41,43 @@ $("#login-btn").click(function() {
   return false;
 });
 
+$("#logout-btn").click(function() {
+  $.ajax({
+    url: 'php/logout.php',
+    data: { logout: true },
+    success: function(data) {
+      var response = JSON.parse(data);
+      if (response.success) {
+        alert('You have been successfully logged out.');
+      }
+    }
+  });
+});
+
+$(document).ready(function() {
+  $('#login-form').submit(function(event) {
+    event.preventDefault(); // prevent the form from submitting normally
+    var email = $('#email').val();
+    var password = $('#password').val();
+
+    $.ajax({
+      url: 'login.php',
+      type: 'post',
+      data: { email: email, password: password },
+      success: function(response) {
+        if (response === "logged in successfully") {
+          $("#loginModal").modal("hide");
+          $(".navbar-collapse.in").collapse("hide");
+          alert('Successfully logged in')
+        } else {
+           alert('Incorrect email or password.');
+        }
+      }
+    });
+  });
+});
+
+
 $("#list-btn").click(function() {
   animateSidebar();
   return false;
