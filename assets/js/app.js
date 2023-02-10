@@ -611,7 +611,7 @@ var households = L.geoJson(null, {
 
           }else{
             L.marker([lat_current,lng_current]).addTo(map);
-            alert(["Sorry, You\'re not in the group location",distance]);
+            alert(["Sorry, You\'re not in the group location. You\'re ",distance, "meters away from the group"]);
             navigator.geolocation.clearWatch(watchID);
             $('.modal').modal('hide');
           }
