@@ -75,8 +75,6 @@ $result= mysqli_query($conn, $sql);
                     <th>CBT phone</th>
                     <th>chairperson name</th>
                     <th>chairperson Phone</th>
-                    <th>Latitude</th>
-                    <th>Longitude</th>
                     <th>Activity date</th>
                     <th>Activity</th>
                     <th>Modules</th>
@@ -95,13 +93,10 @@ $result= mysqli_query($conn, $sql);
                             <td>" . $row["cbtPhone"]. "</td>
                             <td>" . $row["chairpersonName"]. "</td>
                             <td>" . $row["chairpersonPhone"]. "</td>
-                            <td>" . $row["lat"]. "</td>
-                            <td>" . $row["lng"]. "</td>
                             <td>" . $row["created_at"]. "</td>
                             <td>" . $row["training"]. "</td>
                             <td>" . $row["modules"]. "</td>
-                            <td><a href='#' data-toggle='modal' data-target='#imageModal' onclick='showImage(\"images/" . $row["photo"] . "\")'><i class='fas fa-image fa-2x'></i></a></td>
-                            
+                            <td><a href='#' data-toggle='modal' data-target='#imageModal' onclick='showImage(\"images/" . $row["photo"] . "\")'><img width='50px' height='50px' src=\"images/".$row["photo"]."\") ' </a></td>
                           </tr>";  ?>
 
                           <!-- The Modal -->
@@ -136,8 +131,6 @@ $result= mysqli_query($conn, $sql);
                     <th>CBT phone</th>
                     <th>chairperson name</th>
                     <th>chairperson Phone</th>
-                    <th>Latitude</th>
-                    <th>Longitude</th>
                     <th>Activity date</th>
                     <th>Activity</th>
                     <th>modules</th>
