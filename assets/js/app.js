@@ -507,7 +507,7 @@ var households = L.geoJson(null, {
       var button = document.createElement("button");
       button.textContent = "submit";
       button.addEventListener("click", function() {
-        
+        $('#loading').show();
         var canvas = document.getElementById("photo-canvas");
         var ctx = canvas.getContext("2d");
         var imageData = canvas.toDataURL("image/png");
@@ -581,12 +581,12 @@ var households = L.geoJson(null, {
       
           var distance = homeLatLng.distanceTo(currentLatLng);
     
-          $('#loading').show();
-          
+    
           if (distance <= 200) {
             L.marker(homeLatLng).addTo(map);
             L.marker([lat_current,lng_current]).addTo(map);
             navigator.geolocation.clearWatch(watchID);
+            
 
             $.ajax({
               url: 'markers.php',
@@ -610,8 +610,8 @@ var households = L.geoJson(null, {
             });
 
           }else{
-            $('#loading').hide();
             L.marker([lat_current,lng_current]).addTo(map);
+            $('#loading').hide();
             alert(["Sorry, You\'re not in the group location. You\'re ",distance, "meters away from the group"]);
             navigator.geolocation.clearWatch(watchID);
             $('.modal').modal('hide');
